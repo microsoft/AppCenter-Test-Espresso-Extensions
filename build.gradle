@@ -1,0 +1,96 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.1'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+apply plugin: 'maven-publish'
+
+task preparePublish(dependsOn: build)
+
+publishing {
+    publications {
+        androidLib(MavenPublication) {
+            artifact "build/outputs/aar/test-cloud-espresso-extensions-release.aar"
+            groupId "com.xamarin.testcloud"
+            artifactId "espresso-support"
+            version "1.0-SNAPSHOT"
+
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name 'Xamarin Test cloud espresso extensions'
+                    description 'Extensions for producing nice looking test reports for espresso tests in Xamarin Test Cloud'
+                    url 'http://testcloud.xamarin.com'
+                    scm {
+                        connection 'scm:git:git@github.com:xamarinhq/test-cloud-appium-espresso-extensions.git'
+                        developerConnection 'scm:git:git@github.com:xamarinhq/test-cloud-appium-espresso-extensions.git'
+                        url 'git@github.com:xamarinhq/test-cloud-appium-espresso-extensions.git'
+                    }
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'http://www.opensource.org/licenses/mit-license.php'
+                        }
+                    }
+                    developers {
+                        developer {
+                            name 'Chris Fuentes'
+                            email 'chris.fuentes@xamarin.com'
+                            organization 'Xamarin'
+                            organizationUrl 'http://www.xamarin.com'
+                        }
+                        developer {
+                            name 'Simon Søndergaard'
+                            email 'simon@xamarin.com'
+                            organization 'Xamarin'
+                            organizationUrl 'http://www.xamarin.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.xamarin.testcloud:event:1.0-SNAPSHOT', {
+        exclude group: 'junit', module: 'junit'
+    }
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    provided 'com.android.support.test:runner:0.5'
+}
