@@ -5,19 +5,19 @@ import android.support.test.InstrumentationRegistry;
 import com.xamarin.testcloud.event.StdOutEventReporter;
 
 public class Factory {
-    private static RapportHelper rapportHelper;
+    private static ReportHelper reportHelper;
 
     static {
         String label = InstrumentationRegistry.getArguments().getString("label");
         if ("true".equals(label)) {
-            rapportHelper = new RapportHelper(new LocalSocketEventReporter("junitevent"));
+            reportHelper = new ReportHelper(new LocalSocketEventReporter("junitevent"));
         } else {
-            rapportHelper = new RapportHelper(new StdOutEventReporter());
+            reportHelper = new ReportHelper(new StdOutEventReporter());
         }
     }
 
-    public static RapportHelper getRapportHelper() {
-        return rapportHelper;
+    public static ReportHelper getReportHelper() {
+        return reportHelper;
     }
 
     private Factory() {

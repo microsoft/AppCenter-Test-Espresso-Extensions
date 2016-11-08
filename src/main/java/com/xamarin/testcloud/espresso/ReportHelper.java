@@ -5,10 +5,10 @@ import com.xamarin.testcloud.event.EventType;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-public class RapportHelper extends TestWatcher {
+public class ReportHelper extends TestWatcher {
     private final EventReporter eventReporter;
 
-    RapportHelper(EventReporter eventReporter) {
+    ReportHelper(EventReporter eventReporter) {
         super();
         this.eventReporter = eventReporter;
     }
