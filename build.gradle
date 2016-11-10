@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.android.tools.build:gradle:2.2.2'
     }
 }
 
@@ -30,22 +30,79 @@ android {
     }
 }
 
+version = '1.0-SNAPSHOT'
+
 repositories {
     mavenLocal()
     jcenter()
 }
 
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
-task preparePublish(dependsOn: build)
+task sourcesJar(type: Jar) {
+    // There is no allSources in the androidPlugin :-(
+    from 'src'
+    classifier = 'sources'
+}
+
+// pom file name
+ext {
+    pomFilePath = "${project.projectDir}/build/publications/androidLib/pom-default.xml"
+    pomFile = file(pomFilePath)
+}
+// add configuration for pom signing
+configurations {
+    pom
+}
+
+def aar = file("build/outputs/aar/test-cloud-espresso-extensions-release.aar")
+
+artifacts {
+    archives sourcesJar
+    archives aar
+    pom pomFile
+}
+
+// sign all artifacts
+task signArtifacts (type : Sign, dependsOn: sourcesJar) {
+    sign configurations.archives
+}
+signArtifacts.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('generatePom')}
+}
+
+task preparePublication (dependsOn : signArtifacts)
+publish.dependsOn { preparePublication }
+publishToMavenLocal.dependsOn {preparePublication}
+
+def getSignatureFiles = {
+    def allFiles = project.tasks.signArtifacts.signatureFiles.collect { it }
+    def signedSources = allFiles.find { it.name.contains('-sources') }
+    def signedPom = allFiles.find { it.name.startsWith('pom-')}
+    def signedAar = (allFiles - [signedSources] - [signedPom]).first()
+    return [
+            [archive: signedSources, classifier: 'sources', extension: 'jar.asc'],
+            [archive: signedAar,     classifier: null,      extension: 'aar.asc'],
+            [archive: signedPom,     classifier: null,      extension: 'pom.asc']
+    ]
+}
 
 publishing {
     publications {
         androidLib(MavenPublication) {
-            artifact "build/outputs/aar/test-cloud-espresso-extensions-release.aar"
+            artifact aar
             groupId "com.xamarin.testcloud"
             artifactId "espresso-support"
-            version "1.0-SNAPSHOT"
+
+            artifact(sourcesJar)
+
+            getSignatureFiles().each { signature ->
+                artifact(signature.archive) {
+                    classifier = signature.classifier
+                    extension = signature.extension
+                }
+            }
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -87,6 +144,19 @@ publishing {
                         }
                     }
                 }
+            }
+        }
+    }
+    repositories {
+        maven {
+            if(version.endsWith('-SNAPSHOT')) {
+                url 'https://oss.sonatype.org/content/repositories/snapshots/'
+            } else {
+                url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            }
+            credentials {
+                username = ossrhUser
+                password = ossrhPassword
             }
         }
     }
