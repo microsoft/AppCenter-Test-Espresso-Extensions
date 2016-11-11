@@ -30,7 +30,7 @@ android {
     }
 }
 
-version = '1.1-SNAPSHOT'
+version = '1.1'
 
 repositories {
     mavenLocal()
@@ -119,9 +119,9 @@ publishing {
                     description 'Extensions for producing nice looking test reports for espresso tests in Xamarin Test Cloud'
                     url 'http://testcloud.xamarin.com'
                     scm {
-                        connection 'scm:git:git@github.com:xamarinhq/test-cloud-appium-espresso-extensions.git'
-                        developerConnection 'scm:git:git@github.com:xamarinhq/test-cloud-appium-espresso-extensions.git'
-                        url 'git@github.com:xamarinhq/test-cloud-appium-espresso-extensions.git'
+                        connection 'scm:git:git@github.com:xamarinhq/test-cloud-espresso-extensions.git'
+                        developerConnection 'scm:git:git@github.com:xamarinhq/test-cloud-espresso-extensions.git'
+                        url 'git@github.com:xamarinhq/test-cloud-espresso-extensions.git'
                     }
                     licenses {
                         license {
@@ -167,7 +167,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.xamarin.testcloud:event:1.0-SNAPSHOT', {
+    compile 'com.xamarin.testcloud:event:1.1', {
         exclude group: 'junit', module: 'junit'
     }
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'

@@ -61,8 +61,6 @@ Compile your application and tests. E.g. by running `gradle` with the tasks `ass
 
 Perform upload by running:
 
-TODO: change uploader to know what apk is the espresso test?
-
 ```
 xtc test <project>/build/outputs/apk/<apk> <api-key> --devices <selection> --user <email> --workspace <project>/build/outputs/apk/<test-apk>
 ```
