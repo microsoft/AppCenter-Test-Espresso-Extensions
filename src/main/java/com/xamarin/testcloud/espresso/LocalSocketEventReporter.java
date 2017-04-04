@@ -6,15 +6,16 @@ import com.xamarin.testcloud.event.Event;
 import com.xamarin.testcloud.event.EventReporter;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class LocalSocketEventReporter extends EventReporter {
     private final EventServer server;
 
-    public LocalSocketEventReporter(String socketName) {
+    public LocalSocketEventReporter(String socketName, int timeoutInSec) {
         EventServer server1;
         try {
             LocalServerSocket socket = new LocalServerSocket(socketName);
-            server1 = new EventServer(socket);
+            server1 = new EventServer(socket, timeoutInSec, TimeUnit.SECONDS);
         } catch (IOException e) {
             server1 = null;
             new RuntimeException("Unable to create server socket");

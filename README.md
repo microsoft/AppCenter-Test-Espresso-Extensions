@@ -8,7 +8,7 @@ In this guide, you’ll learn how to make the changes necessary to run your exis
 Add the following dependency in your `build.gradle` file:
 
 ```gradle
-androidTestCompile('com.xamarin.testcloud:espresso-support:1.1')
+androidTestCompile('com.xamarin.testcloud:espresso-support:1.2')
 ```
 
 This will ensure the reportHelper is available at compile time. The reportHelper enable the `label` feature. See Step 4 for more detail on the `label` feature.

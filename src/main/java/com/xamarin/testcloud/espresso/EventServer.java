@@ -20,7 +20,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class EventServer implements Runnable {
+class EventServer implements Runnable {
     private final LocalServerSocket socket;
     private final SynchronousQueue<String> queue = new SynchronousQueue<String>();
 
@@ -35,11 +35,6 @@ public class EventServer implements Runnable {
 
     private final Gson gson = new Gson();
 
-    public EventServer(LocalServerSocket socket) {
-        this(socket, 10, TimeUnit.SECONDS);
-    }
-
-    // For testing
     EventServer(LocalServerSocket socket, int timeout, TimeUnit unit) {
         this.socket = socket;
         serverTask = executorService.submit(this);

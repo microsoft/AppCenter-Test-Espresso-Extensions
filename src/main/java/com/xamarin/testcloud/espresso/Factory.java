@@ -1,5 +1,6 @@
 package com.xamarin.testcloud.espresso;
 
+import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 
 import com.xamarin.testcloud.event.StdOutEventReporter;
@@ -8,9 +9,11 @@ public class Factory {
     private static ReportHelper reportHelper;
 
     static {
-        String label = InstrumentationRegistry.getArguments().getString("label");
+        Bundle arguments = InstrumentationRegistry.getArguments();
+        String label = arguments.getString("label");
         if ("true".equals(label)) {
-            reportHelper = new ReportHelper(new LocalSocketEventReporter("junitevent"));
+            int timeoutInSec = Integer.valueOf(arguments.getString("timeoutInSec", "1"));
+            reportHelper = new ReportHelper(new LocalSocketEventReporter("junitevent", timeoutInSec));
         } else {
             reportHelper = new ReportHelper(new StdOutEventReporter());
         }
