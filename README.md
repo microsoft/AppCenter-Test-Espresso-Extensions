@@ -1,55 +1,12 @@
-# Test-Cloud Espresso Extensions
+# Espresso Extensions
 
-This project provides extensions for producing test reports for Espresso tests in Test Cloud. Test Cloud offers access to a very large and diverse set of __Real__ Android (and iOS) devices.
+This project provides extensions for producing test reports for Espresso tests in Visual Studio App Center. Visit our [docs](https://docs.microsoft.com/en-us/mobile-center/test-cloud/preparing-for-upload/espresso) for instructions on how to convert and run your existing Espresso test suite in App Center.
 
-In this guide, you’ll learn how to make the changes necessary to run your existing Espresso test suite in Test Cloud.
+## Upload to Xamarin Test Cloud
 
-## 1. Changes to the build system
-Add the following dependency in your `build.gradle` file:
+The extension also works with Xamarin Test Cloud. Below are the upload instructions for Xamarin Test Cloud. Upload instructions for Visual Studio App Center can be found using the link above.
 
-```gradle
-androidTestCompile('com.xamarin.testcloud:espresso-support:1.3')
-```
-
-This will ensure the reportHelper is available at compile time. The reportHelper enable the `label` feature. See Step 3 for more detail on the `label` feature.
-
-## 2. Changes to the tests
-
-### Step 1 - Add imports
-
-Import these packages into your test classes:
-
-```java
-import android.support.test.runner.AndroidJUnit4;
-import com.xamarin.testcloud.espresso.Factory;
-import com.xamarin.testcloud.espresso.ReportHelper;
-```
-
-### Step 2 - Instantiate the ReportHelper
-
-Insert this declaration in each of your test classes:
-
-```java
-    @Rule
-    public ReportHelper reportHelper = Factory.getReportHelper();
-```
-
-### Step 3 - Update your test cases
-
-Using the helper will still allow you to run your tests locally without additional modifications, but enables you to "label" test steps in your test execution using `reportHelper.label("text")`. The text and a screenshot from the device will be visible in test report in  Test Cloud.
-
-A recommended practice is to have a call to label in the `@After` method, this will include a screenshot of the app final state in the test report. The screenshot will be taken, even if a test is failing, and often provides valuable information as to why it does so. An example `@After` method for a test could look like this:
-
-```java
-    @After
-    public void TearDown(){
-        reportHelper.label("Stopping App");
-    }
-```
-
-## 3. Upload to Test Cloud
-
-If you have not done so already, install our command line interface by following [the installation instructions](UploaderInstall.md/#installation).
+If you have not done so already, install our command line interface by following [the installation instructions](XamarinTestCloudUploaderInstall.md/#installation).
 
 *Note: If you are an existing Test Cloud user currently using the command line tools for Calabash, UITest or Appium, you will need to install this new tool.*
 
