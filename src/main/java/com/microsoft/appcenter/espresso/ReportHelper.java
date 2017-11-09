@@ -1,7 +1,7 @@
-package com.xamarin.testcloud.espresso;
+package com.microsoft.appcenter.espresso;
 
-import com.xamarin.testcloud.event.EventReporter;
-import com.xamarin.testcloud.event.EventType;
+import com.microsoft.appcenter.event.EventReporter;
+import com.microsoft.appcenter.event.EventType;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 

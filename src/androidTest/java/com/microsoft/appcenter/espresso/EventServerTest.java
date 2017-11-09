@@ -1,15 +1,12 @@
-package com.xamarin.testcloud.espresso;
+package com.microsoft.appcenter.espresso;
 
 import android.net.LocalServerSocket;
 
-import com.xamarin.testcloud.event.Event;
-import com.xamarin.testcloud.event.EventType;
+import com.microsoft.appcenter.event.Event;
+import com.microsoft.appcenter.event.EventType;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
