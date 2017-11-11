@@ -1,6 +1,8 @@
 # Espresso Extensions
 
-This project provides extensions for producing test reports for Espresso tests in Visual Studio App Center. Visit our [docs](https://docs.microsoft.com/en-us/mobile-center/test-cloud/preparing-for-upload/espresso) for instructions on how to convert and run your existing Espresso test suite in App Center.
+This project provides extensions for producing test reports for Espresso tests in Visual Studio App Center and Xamarin Test Cloud. 
+
+Visit our [docs](https://docs.microsoft.com/en-us/mobile-center/test-cloud/preparing-for-upload/espresso) for instructions on how to convert and run your existing Espresso test suite in Visual Studio App Center.
 
 ## Upload to Xamarin Test Cloud
 
@@ -23,3 +25,18 @@ xtc test <project>/build/outputs/apk/<apk> <api-key> --devices <selection> --use
 ```
 
 *Note: If you are having trouble targeting the `xtc` command, try executing with the fully qualified path to the package.*
+
+
+# Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.microsoft.com.
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
