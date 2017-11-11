@@ -1,10 +1,10 @@
-package com.xamarin.testcloud.espresso;
+package com.microsoft.appcenter.espresso;
 
 import android.net.LocalServerSocket;
 import android.net.LocalSocket;
 
 import com.google.gson.Gson;
-import com.xamarin.testcloud.event.Event;
+import com.microsoft.appcenter.event.Event;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

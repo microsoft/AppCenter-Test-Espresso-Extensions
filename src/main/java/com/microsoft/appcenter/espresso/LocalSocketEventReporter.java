@@ -1,9 +1,9 @@
-package com.xamarin.testcloud.espresso;
+package com.microsoft.appcenter.espresso;
 
 import android.net.LocalServerSocket;
 
-import com.xamarin.testcloud.event.Event;
-import com.xamarin.testcloud.event.EventReporter;
+import com.microsoft.appcenter.event.Event;
+import com.microsoft.appcenter.event.EventReporter;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

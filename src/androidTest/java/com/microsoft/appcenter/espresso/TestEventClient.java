@@ -1,4 +1,4 @@
-package com.xamarin.testcloud.espresso;
+package com.microsoft.appcenter.espresso;
 
 import android.net.LocalSocket;
 import android.net.LocalSocketAddress;
