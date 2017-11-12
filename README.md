@@ -2,7 +2,7 @@
 
 This project provides extensions for producing test reports for Espresso tests in Visual Studio App Center and Xamarin Test Cloud. 
 
-Visit our [docs](https://docs.microsoft.com/en-us/mobile-center/test-cloud/preparing-for-upload/espresso) for instructions on how to convert and run your existing Espresso test suite in Visual Studio App Center.
+Visit our [docs](https://docs.microsoft.com/appcenter/test-cloud/preparing-for-upload/espresso) for instructions on how to convert and run your existing Espresso test suite in Visual Studio App Center.
 
 ## Upload to Xamarin Test Cloud
 
