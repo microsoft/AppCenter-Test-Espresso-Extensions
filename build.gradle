@@ -62,7 +62,7 @@ configurations {
     pom
 }
 
-def aar = file("build/outputs/aar/appcenter-espresso-test-extension-release.aar")
+def aar = file("build/outputs/aar/AppCenter-Test-Espresso-Extensions-release.aar")
 
 artifacts {
     archives sourcesJar
@@ -125,7 +125,6 @@ publishing {
                     description 'Extensions for producing nice looking test reports for espresso tests in Visual Studio App Center'
                     url 'http://appcenter.ms'
                     scm {
-
                         connection 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
                         developerConnection 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
                         url 'git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
