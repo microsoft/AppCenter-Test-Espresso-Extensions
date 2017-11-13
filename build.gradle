@@ -2,15 +2,20 @@
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
+        classpath 'net.researchgate:gradle-release:2.4.0'
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'net.researchgate.release'
 
 android {
     compileSdkVersion 23
@@ -36,7 +41,7 @@ android {
     }
 }
 
-version = '1.0'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenLocal()
@@ -81,6 +86,8 @@ signArtifacts.dependsOn {
 task preparePublication (dependsOn : signArtifacts)
 publish.dependsOn { preparePublication }
 publishToMavenLocal.dependsOn {preparePublication}
+
+afterReleaseBuild.dependsOn bintrayUpload
 
 def getSignatureFiles = {
     def allFiles = project.tasks.signArtifacts.signatureFiles.collect { it }
