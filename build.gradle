@@ -125,9 +125,10 @@ publishing {
                     description 'Extensions for producing nice looking test reports for espresso tests in Visual Studio App Center'
                     url 'http://appcenter.ms'
                     scm {
-                        connection 'scm:git:git@github.com:xamarinhq/test-cloud-espresso-extensions.git'
-                        developerConnection 'scm:git:git@github.com:xamarinhq/test-cloud-espresso-extensions.git'
-                        url 'git@github.com:xamarinhq/test-cloud-espresso-extensions.git'
+
+                        connection 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
+                        developerConnection 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
+                        url 'git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
                     }
                     licenses {
                         license {
@@ -166,7 +167,7 @@ bintray {
         name = 'espresso-test-extension'
         userOrg = bintrayuserorg
         websiteUrl = 'http://appcenter.ms'
-        vcsUrl = 'git@github.com:xamarinhq/test-cloud-espresso-extensions.git'
+        vcsUrl = 'git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
         licenses = ['MIT']
     }
 
