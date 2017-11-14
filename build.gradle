@@ -85,7 +85,7 @@ signArtifacts.dependsOn {
 
 task preparePublication (dependsOn : signArtifacts)
 publish.dependsOn { preparePublication }
-publishToMavenLocal.dependsOn {preparePublication}
+publishToMavenLocal.dependsOn preparePublication
 
 afterReleaseBuild.dependsOn bintrayUpload
 
