@@ -34,6 +34,8 @@ public class JUnitParamsTest {
     public ReportHelper reportHelper = new ReportHelper(testableEventReporter);
 
     // tests taken from https://github.com/Pragmatists/JUnitParams/blob/master/src/test/java/junitparams/usage/SamplesOfUsageTest.java
+    // They are included here to as examples of parametrized tests. The "real" test is
+    // testThatIdsAreUnique which verifies that all event from the parametrized tests are unique
 
     static enum  PersonType {
         SOME_VALUE,
@@ -191,7 +193,7 @@ public class JUnitParamsTest {
     }
 
     @AfterClass
-    public static void testThatIdsAreUniq() {
+    public static void testThatIdsAreUnique() {
         Set<String> ids = new HashSet<>();
 
         for(Event event : testableEventReporter.getCommitedEvents()) {
