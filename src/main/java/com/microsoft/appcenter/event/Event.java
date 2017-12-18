@@ -11,20 +11,14 @@ public class Event {
         this.timestamp = System.currentTimeMillis() / 1000.0;
     }
 
-    public static Event createLabel(String id, String testName, String className, String run, String label, String screenshotPath, int screenshotOrientation, boolean screenshotRotated) {
+    public static Event createLabel(String id, String testName, String className, String run, String label) {
         Event event = new Event(id, EventType.label, testName, className, run);
-        event.screenshotPath = screenshotPath;
         event.label = label;
-        event.screenshotOrientation = screenshotOrientation;
-        event.screenshotRotated = screenshotRotated;
         return event;
     }
 
-    public static Event createScreenshot(String id, String testName, String className, String run, String screenshotPath, int screenshotOrientation, boolean screenshotRotated) {
+    public static Event createScreenshot(String id, String testName, String className, String run) {
         Event event = new Event(id, EventType.screenshot, testName, className, run);
-        event.screenshotPath = screenshotPath;
-        event.screenshotOrientation = screenshotOrientation;
-        event.screenshotRotated = screenshotRotated;
         return event;
     }
 
@@ -45,9 +39,6 @@ public class Event {
     private final double timestamp;
     private final String parameters;
 
-    private String screenshotPath;
-    private int screenshotOrientation;
-    private boolean screenshotRotated;
     private String label;
     private String exception;
 
@@ -75,14 +66,6 @@ public class Event {
         return label;
     }
 
-    public String getScreenshotPath() {
-        return screenshotPath;
-    }
-
-    public int getScreenshotOrientation() {
-        return screenshotOrientation;
-    }
-
     public String getException() {
         return exception;
     }
@@ -91,8 +74,5 @@ public class Event {
         return timestamp;
     }
 
-    public boolean isScreenshotRotated() {
-        return screenshotRotated;
-    }
 }
 

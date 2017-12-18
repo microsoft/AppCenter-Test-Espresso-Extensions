@@ -61,7 +61,7 @@ public abstract class EventReporter {
     public void reportLabel(String label, String screenshotPath, int screenshotOrientation, boolean screenshotRotated) {
         try {
             String parameters = getParameters(lastDescription);
-            Event event = Event.createLabel(labelId(lastDescription, parameters), lastDescription.getMethodName(), lastDescription.getClassName(), parameters, label, screenshotPath, screenshotOrientation, screenshotRotated);
+            Event event = Event.createLabel(labelId(lastDescription, parameters), lastDescription.getMethodName(), lastDescription.getClassName(), parameters, label);
             commit(event);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -71,7 +71,7 @@ public abstract class EventReporter {
     public void reportScreenshot(String screenshotPath, int screenshotOrientation, boolean screenshotRotated) {
         try {
             String parameters = getParameters(lastDescription);
-            Event event = Event.createScreenshot(screenshotId(lastDescription, parameters), lastDescription.getMethodName(), lastDescription.getClassName(), parameters, screenshotPath, screenshotOrientation, screenshotRotated);
+            Event event = Event.createScreenshot(screenshotId(lastDescription, parameters), lastDescription.getMethodName(), lastDescription.getClassName(), parameters);
             commit(event);
         } catch (IOException e) {
             throw new RuntimeException(e);
