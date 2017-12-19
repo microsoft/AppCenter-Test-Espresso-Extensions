@@ -12,10 +12,10 @@ public class StdOutEventReporter extends EventReporter {
                 System.out.println(String.format(Locale.US, "%s: %s (%s)", event.getType().name(), event.getTestName(), event.getClassName()));
                 break;
             case label:
-                System.out.println(String.format(Locale.US, "%s - %s", event.getLabel(), event.getScreenshotPath()));
+                System.out.println(String.format(Locale.US, "Label: %s", event.getLabel()));
                 break;
             case screenshot:
-                System.out.println(String.format(Locale.US, "Took screenshot - %s", event.getScreenshotPath()));
+                System.out.println("Requested screenshot");
                 break;
             default:
                 System.out.println(event.getType().name());

@@ -1,15 +1,17 @@
 
 buildscript {
     repositories {
+        google()
         jcenter()
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
         classpath 'net.researchgate:gradle-release:2.4.0'
+
     }
 }
 
@@ -19,7 +21,6 @@ apply plugin: 'net.researchgate.release'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 9
@@ -81,9 +82,10 @@ signArtifacts.dependsOn {
     tasks.findAll { task -> task.name.startsWith('generatePom')}
 }
 
-task preparePublication (dependsOn : signArtifacts)
-publish.dependsOn { preparePublication }
-publishToMavenLocal.dependsOn preparePublication
+publish.dependsOn signArtifacts
+publishToMavenLocal.dependsOn publish
+
+bintrayUpload.dependsOn publish
 
 afterReleaseBuild.dependsOn bintrayUpload
 
@@ -117,7 +119,7 @@ publishing {
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
-                configurations.compile.allDependencies.each {
+                configurations.implementation.allDependencies.each {
                     def dependencyNode = dependenciesNode.appendNode('dependency')
                     dependencyNode.appendNode('groupId', it.group)
                     dependencyNode.appendNode('artifactId', it.name)
@@ -180,10 +182,12 @@ bintray {
 }
 
 dependencies {
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
 
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
-    provided 'com.android.support.test:runner:0.5'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compileOnly 'com.android.support.test:runner:0.5'
 }

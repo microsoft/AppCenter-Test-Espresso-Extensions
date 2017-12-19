@@ -17,20 +17,22 @@ public abstract class EventReporter {
     private Description lastDescription = null;
     private int labelCounter = 0;
     private int screenshotCounter = 0;
+
+    // Parameters will always be in "[]": https://github.com/junit-team/junit4/blob/7111b9621997f6c660687b8ac04003398343ee3a/src/main/java/org/junit/runners/Parameterized.java#L484
     private final Pattern paramsFinder = Pattern.compile("\\[(.+?)\\]");
 
     public void reportJunit(EventType eventType, Description description, Throwable throwable) {
-        int run = getRun(description);
+        String parameters = getParameters(description);
         lastDescription = description;
 
         try {
             if (throwable != null) {
                 StringWriter errors = new StringWriter();
                 throwable.printStackTrace(new PrintWriter(errors));
-                Event event = Event.createWithException(toId(description, eventType), eventType, description.getMethodName(), description.getClassName(), run, errors.toString());
+                Event event = Event.createWithException(toId(description, eventType, parameters), eventType, description.getMethodName(), description.getClassName(), parameters, errors.toString());
                 commit(event);
             } else {
-                Event event = Event.create(toId(description, eventType), eventType, description.getMethodName(), description.getClassName(), run);
+                Event event = Event.create(toId(description, eventType, parameters), eventType, description.getMethodName(), description.getClassName(), parameters);
                 commit(event);
             }
 
@@ -43,7 +45,7 @@ public abstract class EventReporter {
         }
     }
 
-    private int getRun(Description description) {
+    private String getParameters(Description description) {
         if (description == null) {
             throw new RuntimeException("Unable to get test information. Make sure the test class includes a @Rule:\n" +
                     "  @Rule\n" +
@@ -51,15 +53,15 @@ public abstract class EventReporter {
         }
 
         Matcher m = paramsFinder.matcher(description.getMethodName());
-        return m.find() ? Integer.parseInt(m.group(1)) : 0;
+        return m.find() ? m.group(1) : "";
     }
 
     protected abstract void commit(Event event) throws IOException;
 
     public void reportLabel(String label, String screenshotPath, int screenshotOrientation, boolean screenshotRotated) {
         try {
-            int run = getRun(lastDescription);
-            Event event = Event.createLabel(labelId(), lastDescription.getMethodName(), lastDescription.getClassName(), run, label, screenshotPath, screenshotOrientation, screenshotRotated);
+            String parameters = getParameters(lastDescription);
+            Event event = Event.createLabel(labelId(lastDescription, parameters), lastDescription.getMethodName(), lastDescription.getClassName(), parameters, label);
             commit(event);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -68,28 +70,28 @@ public abstract class EventReporter {
 
     public void reportScreenshot(String screenshotPath, int screenshotOrientation, boolean screenshotRotated) {
         try {
-            int run = getRun(lastDescription);
-            Event event = Event.createScreenshot(screenshotId(), lastDescription.getMethodName(), lastDescription.getClassName(), run, screenshotPath, screenshotOrientation, screenshotRotated);
+            String parameters = getParameters(lastDescription);
+            Event event = Event.createScreenshot(screenshotId(lastDescription, parameters), lastDescription.getMethodName(), lastDescription.getClassName(), parameters);
             commit(event);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String toId(Description description, EventType eventType) {
-        String id = new ShortIdentifier(String.format(Locale.US, "j%s:%s", eventType.name().substring(0, 3), description.getDisplayName())).value();
+    private String toId(Description description, EventType eventType, String parameters) {
+        String id = new ShortIdentifier(String.format(Locale.US, "j%s:%s:%s", eventType.name().substring(0, 3), description.getDisplayName(), parameters)).value();
         usedIds.add(id);
         return id;
     }
 
-    private String labelId() {
-        String id = new ShortIdentifier(String.format(Locale.US, "jlab:%s:%d", lastDescription.getDisplayName(), labelCounter++)).value();
+    private String labelId(Description lastDescription, String parameters) {
+        String id = new ShortIdentifier(String.format(Locale.US, "jlab:%s:%d:%s", lastDescription.getDisplayName(), labelCounter++, parameters)).value();
         usedIds.add(id);
         return id;
     }
 
-    private String screenshotId() {
-        String id = new ShortIdentifier(String.format(Locale.US, "jscr:%s:%d", lastDescription.getDisplayName(), screenshotCounter++)).value();
+    private String screenshotId(Description lastDescription, String parameters) {
+        String id = new ShortIdentifier(String.format(Locale.US, "jscr:%s:%d:%s", lastDescription.getDisplayName(), screenshotCounter++, parameters)).value();
         usedIds.add(id);
         return id;
     }
