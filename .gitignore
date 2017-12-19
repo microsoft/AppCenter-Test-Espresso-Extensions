@@ -1,3 +1,8 @@
 .gradle/
 .idea/
 build/
+AppCenter-Test-Espresso-Extensions.iml
+gradle/
+gradlew
+gradlew.bat
+local.properties
