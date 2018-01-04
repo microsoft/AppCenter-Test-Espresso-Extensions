@@ -3,10 +3,11 @@ package com.microsoft.appcenter.espresso;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 
+import com.microsoft.appcenter.event.EventReporter;
 import com.microsoft.appcenter.event.StdOutEventReporter;
 
 public class Factory {
-    private static ReportHelper reportHelper;
+    private static EventReporter eventReporter;
 
     static {
         Bundle arguments = InstrumentationRegistry.getArguments();
@@ -17,14 +18,14 @@ public class Factory {
             if(timeout != null) {
                 timeoutInSec = Integer.valueOf(timeout);
             }
-            reportHelper = new ReportHelper(new LocalSocketEventReporter("junitevent", timeoutInSec));
+            eventReporter = new LocalSocketEventReporter("junitevent", timeoutInSec);
         } else {
-            reportHelper = new ReportHelper(new StdOutEventReporter());
+            eventReporter = new StdOutEventReporter();
         }
     }
 
     public static ReportHelper getReportHelper() {
-        return reportHelper;
+        return new ReportHelper(eventReporter);
     }
 
     private Factory() {
