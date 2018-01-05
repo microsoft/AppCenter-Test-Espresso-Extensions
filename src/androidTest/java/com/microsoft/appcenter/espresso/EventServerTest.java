@@ -18,7 +18,7 @@ public class EventServerTest {
         LocalServerSocket socket = new LocalServerSocket(socketName);
         EventServer server = new EventServer(socket, 10, TimeUnit.MILLISECONDS);
 
-        boolean b = server.sendSync(Event.create("id", EventType.started, "testName", "className", 1));
+        boolean b = server.sendSync(Event.create("id", EventType.started, "testName", "className", "1"));
         server.stop();
 
         assertFalse("sendSync without a listener should return false", b);
@@ -31,7 +31,7 @@ public class EventServerTest {
         EventServer server = new EventServer(socket, 10, TimeUnit.SECONDS);
         TestEventClient client = new TestEventClient(socketName);
 
-        boolean b = server.sendSync(Event.create("id", EventType.started, "testName", "className", 1));
+        boolean b = server.sendSync(Event.create("id", EventType.started, "testName", "className", "1"));
         server.stop();
         client.stop();
 

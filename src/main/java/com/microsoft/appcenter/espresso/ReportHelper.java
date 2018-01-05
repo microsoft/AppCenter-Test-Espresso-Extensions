@@ -9,15 +9,13 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 import java.util.IdentityHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReportHelper extends TestWatcher {
-    private final static Object currentReportHelperLock = new Object();
-    @GuardedBy("currentReportHelperLock")
-    private final static IdentityHashMap<ReportHelper, Void> oldReportHelpers = new IdentityHashMap<>();
-    @GuardedBy("currentReportHelperLock")
-    private static ReportHelper currentReportHelper = null;
+    private static AtomicInteger helperIdCounter = new AtomicInteger(0);
 
     private final EventReporter eventReporter;
+    private volatile int helperId = -1;
 
     ReportHelper(EventReporter eventReporter) {
         super();
@@ -25,16 +23,11 @@ public class ReportHelper extends TestWatcher {
     }
 
     private void ensureOnlyOneReporter() {
-       synchronized (currentReportHelperLock) {
-           if(this != currentReportHelper) {
-               if(oldReportHelpers.containsKey(this)) {
-                   throw new IllegalStateException("More that on ReportHelper is active, this will cause report generation to fail. One common cause for this @Rules in test class and in its super class");
-               } else {
-                   oldReportHelpers.put(currentReportHelper, null);
-                   currentReportHelper = this;
-               }
-           }
-       }
+        if(helperId == -1) {
+            helperId = helperIdCounter.incrementAndGet();
+        } else if(helperId != helperIdCounter.get()) {
+            throw new IllegalStateException("More than one ReportHelper is active, this will cause report generation to fail. One common cause for this @Rules in test class and in its super class");
+        }
     }
 
     public void label(String label) {

@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class ReportHelperTest {
 
     @Test
-    public void reportHelperWillComplainIfMoreThatOneIsActive() {
+    public void reportHelperWillComplainIfMoreThanOneIsActive() {
         TestableEventReporter eventReporter = new TestableEventReporter();
         Description description = Description.createTestDescription(this.getClass().getCanonicalName(), "name");
         ReportHelper firstHelper = new ReportHelper(eventReporter);
@@ -23,7 +23,7 @@ public class ReportHelperTest {
         // but we should fail if we ever use it again
         try {
             firstHelper.finished(description);
-            fail("Expected an IllegalArgumentException because there is more that on reporter active");
+            fail("Expected an IllegalArgumentException because there is more than one reporter active");
         } catch (IllegalStateException e) {
             assertThat(e.getMessage(), containsString("@Rules"));
         }
