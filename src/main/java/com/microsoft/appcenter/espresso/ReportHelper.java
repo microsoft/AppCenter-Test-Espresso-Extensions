@@ -3,8 +3,6 @@ package com.microsoft.appcenter.espresso;
 import com.microsoft.appcenter.event.EventReporter;
 import com.microsoft.appcenter.event.EventType;
 
-import net.jcip.annotations.GuardedBy;
-
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
