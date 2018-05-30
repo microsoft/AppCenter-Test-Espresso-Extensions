@@ -64,7 +64,10 @@ class ShortIdentifier {
     }
 
     private byte[] shortenHash(byte[] digestBytes, int useBits) {
-        return Arrays.copyOf(digestBytes, useBits / 8);
+        int bytesToCopy = useBits / 8;
+        byte[] truncate = new byte[bytesToCopy];
+        System.arraycopy(digestBytes, 0, truncate, 0, Math.min(digestBytes.length, bytesToCopy));
+        return truncate;
     }
 
 }
