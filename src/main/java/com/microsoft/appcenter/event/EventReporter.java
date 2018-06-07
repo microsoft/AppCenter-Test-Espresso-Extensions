@@ -49,7 +49,7 @@ public abstract class EventReporter {
         if (description == null) {
             throw new RuntimeException("Unable to get test information. Make sure the test class includes a @Rule:\n" +
                     "  @Rule\n" +
-                    "  public TestWatcher watcher = Factory.createWatcher();");
+                    "  public ReportHelper reportHelper = Factory.getReportHelper();");
         }
 
         Matcher m = paramsFinder.matcher(description.getMethodName());
