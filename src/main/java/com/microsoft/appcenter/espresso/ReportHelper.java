@@ -29,6 +29,9 @@ public class ReportHelper extends TestWatcher {
     }
 
     public void label(String label) {
+        if (null == label || label.length() < 1 || label.length() > 128) {
+            throw new IllegalArgumentException("Labels must be a non-empty string of length <= 128");
+        }
         this.eventReporter.reportLabel(label, "NA", -1, false);
     }
 

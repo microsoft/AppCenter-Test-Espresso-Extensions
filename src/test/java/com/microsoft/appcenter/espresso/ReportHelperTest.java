@@ -28,4 +28,41 @@ public class ReportHelperTest {
             assertThat(e.getMessage(), containsString("@Rules"));
         }
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testEmptyLabelsNotAllowed() {
+        ReportHelper helper = createHelper();
+        helper.label("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullLabelsNotAllowed() {
+        ReportHelper helper = createHelper();
+        helper.label(null);
+    }
+
+    @Test
+    public void testVeryLongLabelsAreNotAllowed() {
+        //128 chars
+        ReportHelper helper = createHelper();
+        String longLabel = "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong";
+        helper.label(longLabel);
+        //expected 128 to be allowed
+        try {
+            helper.label(longLabel + "1");
+            fail("Expected IllegalArgumentException to be raised on 129 length strings");
+        } catch (IllegalArgumentException e) {
+            //expected raise. All good
+        }
+    }
+
+
+    private ReportHelper createHelper() {
+        TestableEventReporter eventReporter = new TestableEventReporter();
+        Description description = Description.createTestDescription(this.getClass().getCanonicalName(), "name");
+        ReportHelper helper = new ReportHelper(eventReporter);
+        helper.starting(description);
+        return helper;
+    }
+
 }
