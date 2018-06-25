@@ -42,20 +42,20 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void testVeryLongLabelsAreNotAllowed() {
+    public void test128CharLabelsAreAllowed() {
         //128 chars
         ReportHelper helper = createHelper();
-        String longLabel = "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong";
+        String longLabel = createLabelOfSize(128);
         helper.label(longLabel);
         //expected 128 to be allowed
-        try {
-            helper.label(longLabel + "1");
-            fail("Expected IllegalArgumentException to be raised on 129 length strings");
-        } catch (IllegalArgumentException e) {
-            //expected raise. All good
-        }
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testVeryLongLabelsAreNotAllowed() {
+        ReportHelper helper = createHelper();
+        String longLabel = createLabelOfSize(129);
+        helper.label(longLabel);
+    }
 
     private ReportHelper createHelper() {
         TestableEventReporter eventReporter = new TestableEventReporter();
@@ -63,6 +63,14 @@ public class ReportHelperTest {
         ReportHelper helper = new ReportHelper(eventReporter);
         helper.starting(description);
         return helper;
+    }
+
+    private String createLabelOfSize(int i) {
+        StringBuilder sb = new StringBuilder(i);
+        while (i-- > 0) {
+            sb.append("a");
+        }
+        return sb.toString();
     }
 
 }
