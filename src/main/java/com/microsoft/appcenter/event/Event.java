@@ -2,7 +2,18 @@ package com.microsoft.appcenter.event;
 
 public class Event {
 
+    public static final int MAX_LABEL_SIZE = 256;
+
     private Event(String id, EventType type, String testName, String className, String parameters) {
+        if (null == id || id.length() < 1) {
+            throw new IllegalArgumentException("id must be a non-empty string");
+        }
+        if (null == testName || testName.length() < 1) {
+            throw new IllegalArgumentException("testName must be a non-empty string");
+        }
+        if (null == className || className.length() < 1) {
+            throw new IllegalArgumentException("className must be a non-empty string");
+        }
         this.id = id;
         this.type = type;
         this.testName = testName;
@@ -12,8 +23,8 @@ public class Event {
     }
 
     public static Event createLabel(String id, String testName, String className, String run, String label) {
-        if (null == label || label.length() < 1 || label.length() > 128) {
-            throw new IllegalArgumentException("labels must be non-empty strings of length <= 128");
+        if (null == label || label.length() < 1 || label.length() > MAX_LABEL_SIZE) {
+            throw new IllegalArgumentException("labels must be non-empty strings of length <= " + MAX_LABEL_SIZE);
         }
         Event event = new Event(id, EventType.label, testName, className, run);
         event.label = label;

@@ -42,10 +42,10 @@ public class ReportHelperTest {
     }
 
     @Test
-    public void test128CharLabelsAreAllowed() {
+    public void test256CharLabelsAreAllowed() {
         //128 chars
         ReportHelper helper = createHelper();
-        String longLabel = createLabelOfSize(128);
+        String longLabel = createLabelOfSize(256);
         helper.label(longLabel);
         //expected 128 to be allowed
     }
@@ -53,7 +53,7 @@ public class ReportHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void testVeryLongLabelsAreNotAllowed() {
         ReportHelper helper = createHelper();
-        String longLabel = createLabelOfSize(129);
+        String longLabel = createLabelOfSize(257);
         helper.label(longLabel);
     }
 
