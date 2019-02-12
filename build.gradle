@@ -5,17 +5,20 @@ buildscript {
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
-        classpath 'net.researchgate:gradle-release:2.4.0'
+        dependencies {
+            classpath 'com.android.tools.build:gradle:3.1.1'
+        }
+
     }
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.8.3"
+    id 'digital.wup.android-maven-publish' version '3.6.2'
+}
+
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'net.researchgate.release'
+
 
 android {
     compileSdkVersion 23
@@ -42,123 +45,65 @@ android {
 
 repositories {
     mavenLocal()
+    google()
     jcenter()
 }
 
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
 task sourcesJar(type: Jar) {
     // There is no allSources in the androidPlugin :-(
     from 'src'
-    classifier = 'sources'
-}
-
-// pom file name
-ext {
-    pomFilePath = "${project.projectDir}/build/publications/androidLib/pom-default.xml"
-    pomFile = file(pomFilePath)
-}
-// add configuration for pom signing
-configurations {
-    pom
-}
-
-def aar = file("build/outputs/aar/AppCenter-Test-Espresso-Extensions-release.aar")
-
-artifacts {
-    archives sourcesJar
-    archives aar
-    pom pomFile
-}
-
-// sign all artifacts
-task signArtifacts (type : Sign, dependsOn: sourcesJar) {
-    sign configurations.archives
-}
-signArtifacts.dependsOn {
-    tasks.findAll { task -> task.name.startsWith('generatePom')}
-}
-
-publish.dependsOn signArtifacts
-publishToMavenLocal.dependsOn publish
-
-bintrayUpload.dependsOn publish
-
-afterReleaseBuild.dependsOn bintrayUpload
-
-def getSignatureFiles = {
-    def allFiles = project.tasks.signArtifacts.signatureFiles.collect { it }
-    def signedSources = allFiles.find { it.name.contains('-sources') }
-    def signedPom = allFiles.find { it.name.startsWith('pom-')}
-    def signedAar = (allFiles - [signedSources] - [signedPom]).first()
-    return [
-            [archive: signedSources, classifier: 'sources', extension: 'jar.asc'],
-            [archive: signedAar,     classifier: null,      extension: 'aar.asc'],
-            [archive: signedPom,     classifier: null,      extension: 'pom.asc']
-    ]
+    archiveClassifier = 'sources'
 }
 
 publishing {
     publications {
         androidLib(MavenPublication) {
-            artifact aar
             groupId "com.microsoft.appcenter"
             artifactId "espresso-test-extension"
 
-            artifact(sourcesJar)
+            from components.android
+            artifact sourcesJar
 
-            getSignatureFiles().each { signature ->
-                artifact(signature.archive) {
-                    classifier = signature.classifier
-                    extension = signature.extension
+            pom {
+                name = 'Visual Studio App Center espresso test extensions'
+                description = 'Extensions for producing nice looking test reports for espresso tests in Visual Studio App Center'
+                url = 'http://appcenter.ms'
+                scm {
+                    connection = 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
+                    developerConnection = 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
+                    url = 'git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
                 }
-            }
-
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                configurations.implementation.allDependencies.each {
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', it.group)
-                    dependencyNode.appendNode('artifactId', it.name)
-                    dependencyNode.appendNode('version', it.version)
-                }
-
-                asNode().children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    name 'Visual Studio App Center espresso test extensions'
-                    description 'Extensions for producing nice looking test reports for espresso tests in Visual Studio App Center'
-                    url 'http://appcenter.ms'
-                    scm {
-                        connection 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
-                        developerConnection 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
-                        url 'git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
-                    }
-                    licenses {
-                        license {
-                            name 'MIT License'
-                            url 'http://www.opensource.org/licenses/mit-license.php'
-                        }
-                    }
-                    developers {
-                        developer {
-                            name 'Chris Fuentes'
-                            email 'Chris.Fuentes@microsoft.com'
-                            organization 'Microsoft'
-                            organizationUrl 'http://www.microsoft.com'
-                        }
-                        developer {
-                            name 'Simon Scharf'
-                            email 'sisonder@microsoft.com'
-                            organization 'Microsoft'
-                            organizationUrl 'http://www.microsoft.com'
-                        }
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'http://www.opensource.org/licenses/mit-license.php'
                     }
                 }
-                asNode().getByName('packaging').first().setValue('aar') // force packaging to aar
+                developers {
+                    developer {
+                        name = 'Chris Fuentes'
+                        email = 'Chris.Fuentes@microsoft.com'
+                        organization  = 'Microsoft'
+                        organizationUrl = 'http://www.microsoft.com'
+                    }
+                    developer {
+                        name = 'Simon Scharf'
+                        email = 'sisonder@microsoft.com'
+                        organization = 'Microsoft'
+                        organizationUrl = 'http://www.microsoft.com'
+                    }
+                }
             }
         }
     }
+}
+
+apply plugin: 'signing'
+
+signing {
+    sign publishing.publications.androidLib
 }
 
 
@@ -183,6 +128,7 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
     testImplementation 'junit:junit:4.12'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
 
