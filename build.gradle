@@ -107,7 +107,7 @@ signing {
     sign publishing.publications.androidLib
 }
 
-afterReleaseBuild.dependsOn bintrayPublish
+afterReleaseBuild.dependsOn bintrayUpload
 
 bintray {
     user = bintrayuser
