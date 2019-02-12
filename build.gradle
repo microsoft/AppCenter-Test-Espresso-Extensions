@@ -15,6 +15,7 @@ buildscript {
 plugins {
     id "com.jfrog.bintray" version "1.8.3"
     id 'digital.wup.android-maven-publish' version '3.6.2'
+    id 'net.researchgate.release' version '2.6.0'
 }
 
 apply plugin: 'com.android.library'
@@ -106,6 +107,7 @@ signing {
     sign publishing.publications.androidLib
 }
 
+afterReleaseBuild.dependsOn bintrayPublish
 
 bintray {
     user = bintrayuser
