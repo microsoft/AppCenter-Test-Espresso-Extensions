@@ -84,7 +84,7 @@ artifacts {
 
 def ext = rootProject.ext
 
-//ext described in scripts/publish-root.gradle
+//ext described in publish.gradle
 // Setup signing values.
 ext."signing.keyId" = ext.mavenSigningKeyId
 ext."signing.secretKeyRingFile" = ext.mavenSecretKeyPath
