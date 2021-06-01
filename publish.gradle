@@ -1,0 +1,45 @@
+/*
+*
+* Copyright (c) Microsoft Corporation. All rights reserved.
+* Licensed under the MIT License.
+*/
+
+ext {
+    //project info
+    siteUrl = 'https://github.com/microsoft/AppCenter-Test-Espresso-Extensions'
+    gitUrl = 'https://github.com/microsoft/AppCenter-Test-Espresso-Extensions.git'
+    groupId = 'com.microsoft.appcenter'
+    projectId = 'espresso-test-extension'
+
+    //change this for a next release
+    packageVersion = '1.5'
+
+    //project description
+    projectName = 'Visual Studio App Center espresso test extensions'
+    projectDescription = 'Extensions for producing nice looking test reports for espresso tests in Visual Studio App Center'
+    projectUrl = 'https://appcenter.ms'
+
+    Properties properties = new Properties()
+    File file = rootProject.file('local.properties')
+
+    if (file.exists()) {
+        properties.load(file.newDataInputStream())
+    }
+
+    mavenUser = properties.getProperty("ossrhUsername")
+    mavenKey = properties.getProperty("ossrhPassword")
+    mavenRepoUrl = properties.getProperty("repoUrl")
+    mavenSnapshotUrl = properties.getProperty("snapshotsUrl")
+    mavenSigningKeyId = properties.getProperty("signing.keyId")
+    mavenPublicKeyPassword = properties.getProperty("signing.password")
+    mavenSecretKeyPath = properties.getProperty("signing.secretKeyRingFile")
+
+    licenseName = 'The MIT License (MIT)'
+    licenseSite = 'https://opensource.org/licenses/MIT'
+    licenseCode = 'MIT'
+
+    developerId = 'microsoft'
+    developerName = 'Microsoft'
+    developerEmail = 'appcentersdk@microsoft.com'
+}
+
