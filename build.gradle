@@ -1,25 +1,22 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            url "https://oss.sonatype.org/content/repositories/snapshots"
         }
         dependencies {
-            classpath 'com.android.tools.build:gradle:3.1.1'
+            classpath 'com.android.tools.build:gradle:3.6.0'
         }
 
     }
 }
 
-plugins {
-    id "com.jfrog.bintray" version "1.8.3"
-    id 'digital.wup.android-maven-publish' version '3.6.2'
-    id 'net.researchgate.release' version '2.6.0'
-}
-
 apply plugin: 'com.android.library'
-
+apply from: "${rootDir}/publish.gradle"
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'maven'
 
 android {
     compileSdkVersion 23
@@ -47,41 +44,92 @@ android {
 repositories {
     mavenLocal()
     google()
-    jcenter()
+    mavenCentral()
 }
-
-apply plugin: 'maven-publish'
 
 task sourcesJar(type: Jar) {
-    // There is no allSources in the androidPlugin :-(
-    from 'src'
-    archiveClassifier = 'sources'
+    afterEvaluate {
+        from android.sourceSets.main.java.srcDirs
+        classifier = 'sources'
+    }
 }
 
-publishing {
-    publications {
-        androidLib(MavenPublication) {
-            groupId "com.microsoft.appcenter"
-            artifactId "espresso-test-extension"
+task javadoc(type: Javadoc) {
+    afterEvaluate {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += configurations.javadocDeps
+        configurations.api.dependencies.withType(ProjectDependency).dependencyProject.buildDir.each { dir -> classpath += files("${dir}/intermediates/classes/release") }
+        //noinspection GroovyAssignabilityCheck
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        android.libraryVariants.all { variant ->
+            if (variant.name == 'release') {
+                owner.classpath += variant.javaCompile.classpath
+            }
+        }
+        javadoc.dependsOn project.assembleRelease
+    }
+}
 
-            from components.android
-            artifact sourcesJar
 
-            pom {
-                name = 'Visual Studio App Center espresso test extensions'
-                description = 'Extensions for producing nice looking test reports for espresso tests in Visual Studio App Center'
-                url = 'http://appcenter.ms'
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    //noinspection GroovyAccessibility
+//    from javadoc.destinationDir
+    from javadoc
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+def ext = rootProject.ext
+
+//ext described in publish.gradle
+// Setup signing values.
+ext."signing.keyId" = ext.mavenSigningKeyId
+ext."signing.secretKeyRingFile" = ext.mavenSecretKeyPath
+ext."signing.password" = ext.mavenPublicKeyPassword
+
+group = ext.groupId
+archivesBaseName = ext.projectId
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: ext.mavenRepoUrl) {
+                authentication(userName: ext.mavenUser, password: ext.mavenKey)
+            }
+
+            snapshotRepository(url: ext.mavenSnapshotUrl) {
+                authentication(userName: ext.mavenUser, password: ext.mavenKey)
+            }
+
+
+            pom.project {
+                name ext.projectName
+                packaging 'aar'
+                // optionally artifactId can be defined here
+                description ext.projectDescription
+                url ext.projectUrl
+
+                groupId = ext.groupId
+                artifactId = ext.projectId
+
                 scm {
-                    connection = 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
-                    developerConnection = 'scm:git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
-                    url = 'git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
+                    connection ext.gitUrl
+                    developerConnection ext.siteUrl
+                    url ext.siteUrl
                 }
+
                 licenses {
                     license {
-                        name = 'MIT License'
-                        url = 'http://www.opensource.org/licenses/mit-license.php'
+                        name ext.licenseName
+                        url ext.licenseSite
                     }
                 }
+
                 developers {
                     developer {
                         name = 'Chris Fuentes'
@@ -99,34 +147,25 @@ publishing {
             }
         }
     }
-}
-
-apply plugin: 'signing'
-
-signing {
-    sign publishing.publications.androidLib
-}
-
-afterReleaseBuild.dependsOn bintrayUpload
-
-bintray {
-    user = bintrayuser
-    key = bintraykey
-
-    pkg {
-        repo = bintrayrepo
-        name = 'espresso-test-extension'
-        userOrg = bintrayuserorg
-        websiteUrl = 'http://appcenter.ms'
-        vcsUrl = 'git@github.com:Microsoft/AppCenter-Test-Espresso-Extensions.git'
-        licenses = ['MIT']
+    signing {
+        required { gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
     }
+}
 
-    publications = ['androidLib']
-    publish = true
+configurations {
+    javadocDeps
 }
 
 dependencies {
+    compileOnly "androidx.annotation:annotation:1.2.0"
+    javadocDeps "androidx.annotation:annotation:1.2.0"
+    configurations.all {
+        resolutionStrategy {
+            force "androidx.annotation:annotation:1.2.0"
+        }
+    }
+
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
